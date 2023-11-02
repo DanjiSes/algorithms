@@ -62,6 +62,7 @@ test.each([
     { 5000: 0, 2000: 0, 1000: 0, 500: 0, 100: 0, 50: 0 },
   ],
 ])("%s, %j, %j -> %s", (sum, limits, noms, expected, limitsres) => {
+  console.log(sum);
   expect(atm(sum, limits, noms)).toStrictEqual(expected);
   expect(limits).toStrictEqual(limitsres);
 });
