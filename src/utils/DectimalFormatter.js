@@ -11,11 +11,27 @@ class DectimalFormatter {
    */
   constructor(config) {
     this.config = {
-      decimal: ".",
+      decimal: ",",
       precision: 1,
-      thousands: ",",
+      thousands: " ",
       ...config,
     };
+  }
+
+  /**
+   * @param {string} str
+   */
+  isValidString(str) {
+    str = str
+      .trim()
+      .replace(new RegExp(this.config.thousands, "gm"), "")
+      .replace(new RegExp(this.config.decimal, "gm"), ".");
+
+    if (!str) return true;
+
+    const regex = new RegExp(`^(\\d*)(\\.?)(\\d*)$`, "gm");
+
+    return !!str.match(regex)?.join("");
   }
 
   format(value) {
@@ -40,11 +56,9 @@ class DectimalFormatter {
    * @param {string} value
    */
   parse(value) {
-    const result = Number(
-      value
-        .replaceAll(this.config.thousands, "")
-        .replaceAll(this.config.decimal, ".")
-    );
+    const result = value
+      .replace(new RegExp(this.config.thousands, "gm"), "")
+      .replace(new RegExp(this.config.decimal, "gm"), ".");
 
     if (Number.isNaN(result)) {
       throw new TypeError(`You MUST pass a valid number format`);
@@ -56,5 +70,16 @@ class DectimalFormatter {
     );
   }
 }
+
+const formatter1 = new DectimalFormatter({
+  thousands: " ",
+  decimal: ",",
+  precision: 2,
+});
+
+const userInput = "1.";
+
+console.log(formatter1.isValidString(userInput)); // if false -> prevent
+console.log(formatter1.parse(userInput));
 
 module.exports = DectimalFormatter;
