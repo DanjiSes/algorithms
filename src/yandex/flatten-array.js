@@ -2,23 +2,30 @@
  * @param {any[]} arr
  */
 function flatten(list) {
+  const stack = [{ list, cursor: 0 }];
+
   const res = [];
 
-  const stack = [...list];
-
   while (stack.length) {
-    const el = stack.pop();
+    const call = stack[stack.length - 1];
 
-    if (Array.isArray(el)) {
-        stack.push(...el)
-    } else {
-        res.unshift(el)
+    const item = call.list[call.cursor];
+
+    if (!item) {
+      stack.pop();
+      continue;
     }
+
+    if (Array.isArray(item)) {
+      stack.push({ list: item, cursor: 0 });
+    } else {
+      res.push(item);
+    }
+
+    call.cursor++;
   }
 
   return res;
 }
 
 module.exports = flatten;
-
-// [1, 2, [3, 4], 5] -> [1, 2, 3, 4, 5]
