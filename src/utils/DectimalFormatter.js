@@ -34,11 +34,13 @@ class DectimalFormatter {
     return !!str.match(regex)?.join("");
   }
 
+  /**
+   * @param {number} value
+   * @returns {string}
+   */
   format(value) {
     if (!Number.isFinite(value)) {
-      throw new TypeError(
-        `You MUST specify a finite number, not [${typeof value} = ${value}]`
-      );
+      return "";
     }
 
     value =
@@ -71,15 +73,46 @@ class DectimalFormatter {
   }
 }
 
+module.exports = DectimalFormatter;
+
 const formatter1 = new DectimalFormatter({
   thousands: " ",
   decimal: ",",
   precision: 2,
 });
 
-const userInput = "1.";
+// 123 -> 123
+console.log(formatter1.format(123));
 
-console.log(formatter1.isValidString(userInput)); // if false -> prevent
-console.log(formatter1.parse(userInput));
+// 1234 -> 1 234
+console.log(formatter1.format(1234));
 
-module.exports = DectimalFormatter;
+// 123456 -> 123 456
+console.log(formatter1.format(123456));
+
+// 1234567 -> 1 234 567
+console.log(formatter1.format(formatter1.parse("1234567")));
+
+// 1. -> 1.
+console.log(formatter1.format(formatter1.parse("1.")));
+
+// 1.1 -> 1,1
+console.log(formatter1.format(formatter1.parse("1.1")));
+
+// 1,1 -> 1,1
+console.log(formatter1.format(formatter1.parse("1,1")));
+
+// 1234.5 -> 1 234,5
+console.log(formatter1.format(formatter1.parse("1234.")));
+
+console.log(formatter1.format(null));
+
+// .1 -> 0.1
+// . -> .
+
+// .. -> .
+
+// abc -> ""
+// 123a -> 123
+
+// 123.2. -> 123,2
